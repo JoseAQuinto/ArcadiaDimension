@@ -122,6 +122,7 @@ function LayerList() {
                 type="button"
                 onClick={() => selectLayer(element.id)}
                 aria-current={selected || undefined}
+                aria-label={`${element.name} (${ELEMENT_META[element.type].label})`}
                 className={cn(
                   'flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-[13px] transition focus-visible:ring-2 focus-visible:ring-brand-500/30 focus-visible:outline-none',
                   selected ? 'bg-brand-50 font-medium text-brand-800' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',

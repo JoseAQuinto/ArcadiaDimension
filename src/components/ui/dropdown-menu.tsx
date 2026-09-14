@@ -34,7 +34,8 @@ export function DropdownMenuContent({
   )
 }
 
-interface ItemProps extends ComponentProps<typeof RadixMenu.Item> {
+/** `asChild` is not supported: the item always renders its icon next to the children. */
+interface ItemProps extends Omit<ComponentProps<typeof RadixMenu.Item>, 'asChild'> {
   icon?: ReactNode
   tone?: 'default' | 'danger'
 }

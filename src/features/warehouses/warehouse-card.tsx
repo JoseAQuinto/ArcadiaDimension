@@ -1,5 +1,5 @@
 import { ArrowRight, Ellipsis, ExternalLink, Pencil, Trash2 } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import type { WarehouseSummary } from '@shared/api'
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ interface WarehouseCardProps {
 }
 
 export function WarehouseCard({ warehouse, onEdit, onDelete }: WarehouseCardProps) {
+  const navigate = useNavigate()
   const { stats } = warehouse
   const editorPath = `/warehouses/${warehouse.id}`
   const ratio = occupancyRatio(stats.occupiedLocations, stats.locations)
@@ -69,8 +70,8 @@ export function WarehouseCard({ warehouse, onEdit, onDelete }: WarehouseCardProp
               <Ellipsis className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem icon={<ExternalLink />} asChild>
-                <Link to={editorPath}>Abrir editor</Link>
+              <DropdownMenuItem icon={<ExternalLink />} onSelect={() => navigate(editorPath)}>
+                Abrir editor
               </DropdownMenuItem>
               <DropdownMenuItem icon={<Pencil />} onSelect={() => onEdit(warehouse)}>
                 Editar datos
