@@ -1,7 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { loginSchema, registerSchema } from '../../../shared/schemas.js'
-import { clearSessionCookie, createSessionToken, requireAuth, setSessionCookie } from '../../lib/auth.js'
-import { unauthorized } from '../../lib/errors.js'
+import { clearSessionCookie, createSessionToken, getSessionUserId, setSessionCookie } from '../../lib/auth.js'
 import { ok, parseInput } from '../../lib/http.js'
 import { authenticate, findUserById, registerUser } from './auth.service.js'
 
@@ -23,12 +22,11 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     return ok({ loggedOut: true })
   })
 
-  app.get('/me', { preHandler: requireAuth }, async (request, reply) => {
-    const user = await findUserById(request.userId)
-    if (!user) {
-      clearSessionCookie(reply)
-      throw unauthorized('Tu sesión ya no es válida')
-    }
+  /** Current session. Anonymous visitors get `user: null` instead of an error. */
+  app.get('/me', async (request, reply) => {
+    const userId = await getSessionUserId(request)
+    const user = userId ? await findUserById(userId) : null
+    if (userId && !user) clearSessionCookie(reply)
     return ok({ user })
   })
 }

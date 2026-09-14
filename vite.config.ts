@@ -13,8 +13,21 @@ export default defineConfig({
       '@shared': fileURLToPath(new URL('./shared', import.meta.url)),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/, priority: 30 },
+            { name: 'konva', test: /node_modules[\\/](konva|react-konva|react-reconciler|its-fine)[\\/]/, priority: 20 },
+            { name: 'vendor', test: /node_modules[\\/]/, priority: 10 },
+          ],
+        },
+      },
+    },
+  },
   server: {
-    port: 5173,
+    port: Number(process.env.PORT ?? 5173),
     proxy: {
       '/api': { target: `http://localhost:${apiPort}` },
     },

@@ -106,6 +106,10 @@ describe.skipIf(!process.env.DATABASE_URL)('ArcadiaDimension API', () => {
 
     const unknownRoute = await call('GET', '/api/nope')
     expect(unknownRoute.body).toMatchObject({ success: false, code: 'NOT_FOUND' })
+
+    const anonymousSession = await call('GET', '/api/auth/me')
+    expect(anonymousSession.status).toBe(200)
+    expect(anonymousSession.body.data.user).toBeNull()
   })
 
   it('registers, rejects duplicates and validates credentials', async () => {

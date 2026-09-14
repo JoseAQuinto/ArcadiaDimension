@@ -66,10 +66,14 @@ export function clearSessionCookie(reply: FastifyReply): void {
   reply.clearCookie(SESSION_COOKIE, { path: '/' })
 }
 
+export async function getSessionUserId(request: FastifyRequest): Promise<string | null> {
+  const token = request.cookies[SESSION_COOKIE]
+  return token ? readUserId(token) : null
+}
+
 /** preHandler hook: rejects the request unless it carries a valid session. */
 export async function requireAuth(request: FastifyRequest): Promise<void> {
-  const token = request.cookies[SESSION_COOKIE]
-  const userId = token ? await readUserId(token) : null
+  const userId = await getSessionUserId(request)
   if (!userId) throw unauthorized()
   request.userId = userId
 }
