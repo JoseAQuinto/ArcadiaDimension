@@ -1,0 +1,19 @@
+{
+  // Solution file: `tsc -b` type-checks each referenced project.
+  // The compilerOptions below are only read by Vercel's Node builder when it
+  // compiles the serverless function in `api/` (it walks up to this file).
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.server.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
