@@ -283,7 +283,7 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 
 ### Configurar Neon
 
-1. Crea un proyecto en [Neon](https://console.neon.tech) (PostgreSQL 15 o superior).
+1. Crea un proyecto en [Neon](https://console.neon.tech) (PostgreSQL 15 o superior) en la región **AWS Europe Central 1 (Frankfurt)**, la misma en la que `vercel.json` despliega la función (`fra1`). Si eliges otra región, cambia también `regions` en `vercel.json` para evitar latencia entre API y base de datos.
 2. En **Connect**, copia la cadena de conexión **pooled** y pégala en `DATABASE_URL`.
 3. Abre el **SQL Editor** de Neon y ejecuta el contenido de [`database/schema.sql`](database/schema.sql). Es idempotente y se puede ejecutar varias veces.
 4. (Opcional) Ejecuta [`database/demo.sql`](database/demo.sql) para cargar los datos de demostración.
@@ -361,7 +361,7 @@ El repositorio ya incluye la configuración necesaria (`vercel.json`): framework
 1. En Vercel, **Add New → Project** e importa el repositorio de GitHub. No hace falta cambiar los ajustes de build.
 2. En **Settings → Environment Variables**, añade `DATABASE_URL` (conexión _pooled_ de Neon) y `JWT_SECRET`. Si usas la integración de Neon del marketplace de Vercel, `DATABASE_URL` se crea automáticamente.
 3. Ejecuta `database/schema.sql` (y opcionalmente `database/demo.sql`) en el SQL Editor de Neon.
-4. Pulsa **Deploy** y comprueba `https://<tu-dominio>/api/health`.
+4. Pulsa **Deploy** y comprueba `https://<tu-dominio>/api/health`: debe responder `"database": "ok"`. Si falta una variable, la base de datos no es accesible o no se ha ejecutado `schema.sql`, responde `503` con un mensaje que indica el problema.
 
 > La cookie de sesión se marca como `Secure` en producción. Frontend y API comparten dominio, así que no hace falta configurar CORS.
 

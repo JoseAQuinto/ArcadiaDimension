@@ -1,7 +1,9 @@
 import cookie from '@fastify/cookie'
+import { sql } from 'drizzle-orm'
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify'
 import type { ApiErrorCode, ApiFailure, ValidationIssue } from '../shared/api.js'
 import { ConfigurationError } from './config/env.js'
+import { getDb } from './db/client.js'
 import { getErrorCode } from './lib/db-errors.js'
 import { AppError } from './lib/errors.js'
 import { ok } from './lib/http.js'
@@ -79,7 +81,12 @@ export function buildApp({ logger = false }: BuildAppOptions = {}): FastifyInsta
 
   app.register(
     async (api) => {
-      api.get('/health', async () => ok({ status: 'ok' }))
+      // Touches the users table so a missing env var, unreachable database or
+      // unapplied schema surfaces as a 503 through the error handler above.
+      api.get('/health', async () => {
+        await getDb().execute(sql`select 1 from users limit 1`)
+        return ok({ status: 'ok', database: 'ok' })
+      })
       await api.register(authRoutes, { prefix: '/auth' })
       await api.register(warehouseRoutes, { prefix: '/warehouses' })
       await api.register(locationRoutes)
